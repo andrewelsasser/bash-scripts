@@ -1,0 +1,57 @@
+#!/bin/bash
+
+clear
+
+# Function to validate URL
+validate_url() {
+    if [[ ! $1 =~ ^https?:// ]]; then
+        echo "Invalid URL. Please enter a valid URL starting with http:// or https://."
+        exit 1
+    fi
+}
+
+# Function to validate file name
+validate_filename() {
+    if [[ -z $1 ]]; then
+        echo "File name cannot be empty."
+        exit 1
+    fi
+}
+
+read -p "Enter Website: " website
+validate_url "$website"
+
+read -p "File Name: " webtestfile
+validate_filename "$webtestfile"
+
+output_file="$webtestfile.txt"
+if [ -f "$output_file" ]; then
+    echo "File $output_file already exists. It will be overwritten."
+fi
+
+{
+    echo "File Name: $output_file"
+    script_path="$(realpath "$0")"
+    echo "Current script path: $script_path"
+
+    echo -e "\n\n"
+    echo "Test Date & Time: $(date) ----- $website ------"
+    echo "-------------------------------------"
+    if ! curl -I "$website"; then
+        echo "Failed to fetch headers from $website"
+        exit 1
+    fi
+    echo "-------------------------------------"
+    echo "Test Date & Time: $(date)"
+
+    if ! curl -s -w 'Testing Website Response Time for :%{url_effective}\n\nLookup Time:\t%{time_namelookup}\nConnect Time:\t%{time_connect}\nAppCon Time:\t%{time_appconnect}\nRedirect Time:\t%{time_redirect}\nPre-transfer Time:\t%{time_pretransfer}\nStart-transfer Time:\t%{time_starttransfer}\n\nTotal Time:\t%{time_total}\n' -o /dev/null "$website"; then
+        echo "Failed to measure response time for $website"
+        exit 1
+    fi
+
+    echo "---------------------------------------------"
+    echo "---------------------------------------------"
+    echo -e "\n"
+} >> "$output_file"
+
+nano "$output_file"
