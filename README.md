@@ -22,13 +22,15 @@ The script webtest.sh v2 is a Bash script that performs the following tasks:
 3. Prompts the user to enter a file name and validates that it is not empty.
 4. Checks if a file with the entered name already exists and warns the user that it will be overwritten.
 5. Writes the following information to the output file:
+   
    a. The file name.
    b. The current script path.
    c. The current date and time.
    d. The website URL.
    e. The headers of the website's response using curl -I.
    f. The response time metrics using curl -s -w.
-6. Opens the output file in the nano text editor for review.
+   
+7. Opens the output file in the nano text editor for review.
 
 
 The script is useful for testing a website's response headers and response time and saving the results in a text file for further analysis.
